@@ -1,27 +1,42 @@
-import React from 'react';
+import React from "react";
 
-const Cell: React.FC<ICellProps> = (props) => {
+const Cell: React.FC<ICellProps> = props => {
+  const defaultSwitchClasses: ICellProps = {
+    active: false,
+    oPlayer: false,
+    xPlayer: false
+  };
 
-    const { children, ...switchClasses } = props;
+  const { children, ...switchClasses } = props;
 
-    const classNamesBitMask: any = {
-        '1': 'table__cell',
-        '2': 'table__cell_active',
-        '4': 'table__cell_o',
-        '8': 'table__cell_x'
-    };
+  const classNamesBitMask: Map<number, string> = new Map([
+    [2 ** 0, "table__cell"],
+    [2 ** 1, "table__cell_active"],
+    [2 ** 2, "table__cell_o"],
+    [2 ** 3, "table__cell_x"]
+  ]);
 
-    const currentClassesBitMask: number = Number([
-        true,
-        ...Object.values(switchClasses)
-    ].map(Number).map(bit => bit.toString(2)).reverse().join(''));
+  const currentClassesBitMask: number = Number.parseInt(
+    [true, ...Object.values({ ...defaultSwitchClasses, ...switchClasses })]
+      .map(Number)
+      .reverse()
+      .join(""),
+    2
+  );
 
-    return (<div className={Object.entries(classNamesBitMask).reduce((classNamesString, [bit, className]) => {
-        
-        return ((Number.parseInt(bit, 2) & currentClassesBitMask) && `${classNamesString} ${className}`) || classNamesString;
-    
-    }, '')} />);
-
+  return (
+    <div
+      className={Array.from(classNamesBitMask.entries())
+        .reduce((classNamesList, [bit, className]) => {
+          return (
+            (Number(bit & currentClassesBitMask) > 0 &&
+              (classNamesList.push(className), classNamesList)) ||
+            classNamesList
+          );
+        }, [] as Array<string>)
+        .join(" ")}
+    />
+  );
 };
 
 export default Cell;
