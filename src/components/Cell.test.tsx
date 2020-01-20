@@ -17,28 +17,31 @@ afterEach(() => {
 });
 
 it("has proper class names", () => {
+
+  const onClilck: jest.Mock<void> = jest.fn();
+
   act(() => {
-    render(<Cell />, container);
+    render(<Cell onClick={onClilck} />, container);
   });
   expect((container.querySelector("div") as Element).className).toBe(
     "table__cell"
   );
 
   act(() => {
-    render(<Cell active={true} />, container);
+    render(<Cell onClick={onClilck} active={true} />, container);
   });
   expect((container.querySelector("div") as Element).className).toBe(
     "table__cell table__cell_active"
   );
 
   act(() => {
-    render(<Cell active={true} oPlayer={true} />, container);
+    render(<Cell onClick={onClilck} active={true} oPlayer={true} />, container);
   });
   expect((container.querySelector("div") as Element).className).toBe(
     "table__cell table__cell_active table__cell_o"
   );
   act(() => {
-    render(<Cell active={true} xPlayer={true} />, container);
+    render(<Cell onClick={onClilck} active={true} xPlayer={true} />, container);
   });
   expect((container.querySelector("div") as Element).className).toBe(
     "table__cell table__cell_active table__cell_x"
