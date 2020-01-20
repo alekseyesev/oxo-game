@@ -1,13 +1,18 @@
 import React from "react";
 
 const Cell: React.FC<ICellProps> = props => {
-  const defaultSwitchClasses: ICellProps = {
+  const defaultSwitchClasses: ICellClassesProps = {
     active: false,
     oPlayer: false,
     xPlayer: false
   };
 
-  const { children, ...switchClasses } = props;
+  const {
+    children,
+    onClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+      e.preventDefault(),
+    ...switchClasses
+  } = props;
 
   const classNamesBitMask: Map<number, string> = new Map([
     [2 ** 0, "table__cell"],
@@ -26,6 +31,7 @@ const Cell: React.FC<ICellProps> = props => {
 
   return (
     <div
+      onClick={onClick}
       className={Array.from(classNamesBitMask.entries())
         .reduce((classNamesList, [bit, className]) => {
           return (
