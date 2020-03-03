@@ -8,12 +8,12 @@ import {
   roundEnd
 } from "./actions";
 
-const [TABLE_MATRIX, MAX_SCORE, READY, PLAY, MOVE, ROUND_END] = constants;
+const { TABLE_MATRIX, MAX_SCORE, READY, PLAY, MOVE, ROUND_END } = constants;
 
 describe("actions", () => {
   it("should create an action to set table matrix parameter", () => {
     const rowLength: number = 8;
-    const expectedAction: ITableMatrix = {
+    const expectedAction: IActionTableMatrix = {
       type: TABLE_MATRIX,
       rowLength
     };
@@ -21,7 +21,7 @@ describe("actions", () => {
   });
   it("should create an action to set max score parameter", () => {
     const score: number = 1;
-    const expectedAction: IMaxScore = {
+    const expectedAction: IActionMaxScore = {
       type: MAX_SCORE,
       score
     };
@@ -33,7 +33,7 @@ describe("actions", () => {
       type: READY,
       gameStatus
     };
-    expect(ready(gameStatus)).toEqual(expectedAction);
+    expect(ready()).toEqual(expectedAction);
   });
   it("should create an action to set game status to play", () => {
     const gameStatus: gameStatus = "play";
@@ -41,28 +41,24 @@ describe("actions", () => {
       type: PLAY,
       gameStatus
     };
-    expect(play(gameStatus)).toEqual(expectedAction);
+    expect(play()).toEqual(expectedAction);
   });
   it("should create an action to the game move", () => {
-    const playerId: playerId = "o";
     const tableMatrix: number = 3;
     const cellId: number = 0;
     const expectedAction: IActionMove = {
       type: MOVE,
-      playerId,
       tableMatrix,
       cellId
     };
-    expect(move(playerId, tableMatrix, cellId)).toEqual(expectedAction);
+    expect(move(tableMatrix, cellId)).toEqual(expectedAction);
   });
   it("should create an action to the round end", () => {
-    const playerId: playerId = "x";
-    const score: number = 1;
-    const expectedAction: IActionRoundEnd = {
+    const gameStatus: gameStatus = "roundEnd";
+    const expectedAction: IActionGameStatus = {
       type: ROUND_END,
-      playerId,
-      score
+      gameStatus
     };
-    expect(roundEnd(playerId, score)).toEqual(expectedAction);
+    expect(roundEnd()).toEqual(expectedAction);
   });
 });

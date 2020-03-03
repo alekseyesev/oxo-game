@@ -1,10 +1,15 @@
 import React from "react";
+import { Store, createStore } from "redux";
+import { Provider } from "react-redux";
+import oxoReducers from "../redux/reducers";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 
 import Table from "./Table";
 
 let container: Element;
+
+const store: Store = createStore(oxoReducers);
 
 beforeEach(() => {
   container = document.createElement("div");
@@ -17,12 +22,13 @@ afterEach(() => {
 });
 
 it("has proper class names", () => {
-  const placeMark: jest.Mock<void> = jest.fn();
-  const cells: Array<ICellProps> = [{ onClick: () => {} }];
+  const cellCount: number = 9;
 
   act(() => {
     render(
-      <Table inProgress={false} placeMark={placeMark} cells={cells} />,
+      <Provider store={store}>
+        <Table inProgress={false} cellCount={cellCount} />
+      </Provider>,
       container
     );
   });
@@ -30,7 +36,9 @@ it("has proper class names", () => {
 
   act(() => {
     render(
-      <Table inProgress={true} placeMark={placeMark} cells={cells} />,
+      <Provider store={store}>
+        <Table inProgress={true} cellCount={cellCount} />
+      </Provider>,
       container
     );
   });
@@ -39,14 +47,18 @@ it("has proper class names", () => {
   );
 });
 
-it("renders with 9 cells", () => {
-  const placeMark: jest.Mock<void> = jest.fn();
-  const cells: Array<ICellProps> = Array(9).fill({ onClick: () => {} });
+it("renders with 64 cells", () => {
+  const cellCount: number = 64;
 
   act(() => {
-    render(<Table placeMark={placeMark} cells={cells} />, container);
+    render(
+      <Provider store={store}>
+        <Table cellCount={cellCount} />
+      </Provider>,
+      container
+    );
   });
   expect(
     (container.querySelectorAll(".table__cell") as NodeListOf<Element>).length
-  ).toBe(9);
+  ).toBe(64);
 });

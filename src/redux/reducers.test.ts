@@ -1,7 +1,7 @@
 import { constants } from "./actions";
 import reducer from "./reducers";
 
-const [TABLE_MATRIX, MAX_SCORE, READY, PLAY, MOVE, ROUND_END] = constants;
+const { TABLE_MATRIX, MAX_SCORE, READY, PLAY, MOVE, ROUND_END } = constants;
 
 const initialState: {
   events: IEvents;
@@ -9,11 +9,21 @@ const initialState: {
   settings: ISettings;
 } = {
   events: {
-    o: { movesBitmap: Int8Array.from([0, 0, 0]), score: 0 },
-    x: { movesBitmap: Int8Array.from([0, 0, 0]), score: 0 }
+    o: {
+      winner: "not yet",
+      currentPlayer: true,
+      movesBitmap: Int8Array.from([0, 0, 0]),
+      score: 0
+    },
+    x: {
+      winner: "not yet",
+      currentPlayer: false,
+      movesBitmap: Int8Array.from([0, 0, 0]),
+      score: 0
+    }
   },
   progress: { status: "ready" },
-  settings: { maxScore: 1, tableMatrix: 3 }
+  settings: { tableMatrix: 3, maxScore: 1, maxRound: 2 }
 };
 
 describe("oxo reducer", () => {
@@ -22,32 +32,34 @@ describe("oxo reducer", () => {
       reducer(
         undefined,
         {} as
-          | (ITableMatrix & IMaxScore)
+          | (IActionTableMatrix & IActionMaxScore & IActionMaxRound)
           | IActionGameStatus
-          | (IActionMove & IActionRoundEnd)
+          | (IActionMove & IActionGameStatus)
       )
     ).toEqual(initialState);
   });
   it("should handle TABLE_MATRIX", () => {
-    const action: ITableMatrix & IMaxScore = {
+    const action: IActionTableMatrix & IActionMaxScore & IActionMaxRound = {
       type: TABLE_MATRIX,
       rowLength: 8,
-      score: 1
+      score: 1,
+      round: 2
     };
     expect(reducer(initialState, action)).toEqual({
       ...initialState,
-      ...{ settings: { maxScore: 1, tableMatrix: 8 } }
+      ...{ settings: { tableMatrix: 8, maxScore: 1, maxRound: 2 } }
     });
   });
   it("should handle MAX_SCORE", () => {
-    const action: ITableMatrix & IMaxScore = {
+    const action: IActionTableMatrix & IActionMaxScore & IActionMaxRound = {
       type: MAX_SCORE,
       rowLength: 3,
-      score: 10
+      score: 10,
+      round: 2
     };
     expect(reducer(initialState, action)).toEqual({
       ...initialState,
-      ...{ settings: { maxScore: 10, tableMatrix: 3 } }
+      ...{ settings: { tableMatrix: 3, maxScore: 10, maxRound: 2 } }
     });
   });
   it("should handle READY", () => {
@@ -71,10 +83,9 @@ describe("oxo reducer", () => {
     });
   });
   it("should handle MOVE", () => {
-    const action: IActionMove & IActionRoundEnd = {
+    const action: IActionMove & IActionGameStatus = {
       type: MOVE,
-      playerId: "o",
-      score: 0,
+      gameStatus: "play",
       tableMatrix: 3,
       cellId: 1
     };
@@ -82,28 +93,30 @@ describe("oxo reducer", () => {
       ...initialState,
       ...{
         events: {
-          o: { movesBitmap: Int8Array.from([2, 0, 0]), score: 0 },
-          x: { movesBitmap: Int8Array.from([0, 0, 0]), score: 0 }
+          o: {
+            winner: "not yet",
+            currentPlayer: true,
+            movesBitmap: Int8Array.from([2, 0, 0]),
+            score: 0
+          },
+          x: {
+            winner: "not yet",
+            currentPlayer: false,
+            movesBitmap: Int8Array.from([0, 0, 0]),
+            score: 0
+          }
         }
       }
     });
   });
   it("should handle ROUND_END", () => {
-    const action: IActionMove & IActionRoundEnd = {
+    const action: IActionGameStatus = {
       type: ROUND_END,
-      playerId: "x",
-      score: 1,
-      tableMatrix: -1,
-      cellId: -1
+      gameStatus: "roundEnd"
     };
     expect(reducer(initialState, action)).toEqual({
       ...initialState,
-      ...{
-        events: {
-          o: { movesBitmap: Int8Array.from([0, 0, 0]), score: 0 },
-          x: { movesBitmap: Int8Array.from([0, 0, 0]), score: 1 }
-        }
-      }
+      ...{ progress: { status: "roundEnd" } }
     });
   });
 });

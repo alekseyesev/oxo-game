@@ -17,31 +17,50 @@ afterEach(() => {
 });
 
 it("has proper class names", () => {
-
-  const onClilck: jest.Mock<void> = jest.fn();
+  const componentId: number = 0;
+  const onMove: jest.Mock<Function> = jest.fn();
 
   act(() => {
-    render(<Cell onClick={onClilck} />, container);
+    render(<Cell componentId={componentId} onMove={onMove} />, container);
   });
   expect((container.querySelector("div") as Element).className).toBe(
     "table__cell"
   );
 
   act(() => {
-    render(<Cell onClick={onClilck} active={true} />, container);
+    render(
+      <Cell componentId={componentId} onMove={onMove} active={true} />,
+      container
+    );
   });
   expect((container.querySelector("div") as Element).className).toBe(
     "table__cell table__cell_active"
   );
 
   act(() => {
-    render(<Cell onClick={onClilck} active={true} oPlayer={true} />, container);
+    render(
+      <Cell
+        componentId={componentId}
+        onMove={onMove}
+        active={true}
+        oPlayer={true}
+      />,
+      container
+    );
   });
   expect((container.querySelector("div") as Element).className).toBe(
     "table__cell table__cell_active table__cell_o"
   );
   act(() => {
-    render(<Cell onClick={onClilck} active={true} xPlayer={true} />, container);
+    render(
+      <Cell
+        componentId={componentId}
+        onMove={onMove}
+        active={true}
+        xPlayer={true}
+      />,
+      container
+    );
   });
   expect((container.querySelector("div") as Element).className).toBe(
     "table__cell table__cell_active table__cell_x"
