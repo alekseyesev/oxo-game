@@ -14,7 +14,7 @@ const WithScore: Function = (
   const ComponentWithScore: React.FC<IPlayerProps> = componentProps => {
     const score: number = useSelector(scoreSelector);
 
-    return <Component score={score} {...componentProps} />;
+    return <Component playerId={playerId} score={score} {...componentProps} />;
   };
   return ComponentWithScore;
 };

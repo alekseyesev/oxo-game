@@ -64,7 +64,7 @@ const events = (
   },
   action: IActionMove & IActionPlayer & IActionCalculatePlayerScore
 ): IEvents => {
-  const playerId: playerId = (state.o.currentPlayer && "o") || "x";
+  let playerId: playerId = (state.o.currentPlayer && "o") || "x";
   switch (action.type) {
     case MOVE:
       return {
@@ -113,6 +113,7 @@ const events = (
         }
       };
     case CALCULATE_PLAYER_SCORE:
+      playerId = (state.o.currentPlayer && "x") || "o";
       return {
         ...state,
         ...{
