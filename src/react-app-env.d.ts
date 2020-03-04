@@ -108,3 +108,7 @@ interface IButtonProps {
   additionalClasses?: Array<string>;
   onClick?: () => void;
 }
+
+interface IPlayerProps extends IScore {
+  playerId: playerId;
+}
